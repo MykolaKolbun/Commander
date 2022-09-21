@@ -1,0 +1,58 @@
+Create Models folder
+Create data models inside
+
+Create Data folder
+Create Repository interface
+Create repository inplemented interface
+
+Create Controllers folder
+Create controller with CRUD methods
+
+
+Install packages
+    dotnet add package Microsoft.EntityFrameworkCore
+    dotnet add package Microsoft.EntityFrameworkCore.Design
+
+    dotnet add package Microsoft.EntityFrameworkCore.SqlServer   here could be another package depending on database type in a project MySql, MonoDB....
+
+    dotnet tool install --global dotnet-ef   the tool for VS Code to work with Entityframework like migrations
+    if it is installed and version is lower then EF needs to update
+    dotnet tool update --global dotnet-ef
+
+Create DBContext file (CommanderContext.cs)
+Add to appsettings.json file connection string information
+
+Add DbContext to Service builder (program.cs)
+    
+    builder.Services.AddDbContext<CommanderContext>(opt => opt.UseSqlServer(
+        builder.Configuration.GetConnectionString("CommanderConnection")
+    ));
+
+Migration
+1. Create migration
+    dotnet ef migrations add InitialMigration  - where InitialMigration - is the name
+
+    To remove migration if it is not fitted 
+        dotnet ef migrations remove
+
+2. Apply migration to update database
+    dotnet ef database update
+
+Create in Data folder new implementation for repository which going to use sql database
+    sqlCommanderRepo class
+
+To hide database models from external contract (to be able to indepent on database structure, to hide filds, to combine tables) recomends to use Data Transfer Objects for reading and writing operations.
+
+To link database models to DTO models uses Automapper extension
+    Install Automapper
+    dotnet add package AutoMapper.Extensions.Microsoft.DependencyInjection
+
+    For using in the application needs to add automapper to services in program.cs file 
+        builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); (if it not recognized add using statement AutoMapper)
+Create Folder Dtos
+    Create file CommandReadDto.cs and fill it from command.cs (from model class) or fill it with nessesary properties depends on API requirements. It could have more or less properties then original model, it does not need attributes.
+To map DTOs
+    1 Create folder Profiles
+    2 Create file CommandProfile.cs for Command model
+
+
